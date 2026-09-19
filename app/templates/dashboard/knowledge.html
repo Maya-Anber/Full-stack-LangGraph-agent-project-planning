@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Knowledge Base{% endblock %}
+{% block content %}
+<div class="actions-row">
+  <div>
+    <h1>Knowledge Base (RAG)</h1>
+    <p class="subtitle">Add, edit, or delete entries. The retrieval index refreshes immediately after every change.</p>
+  </div>
+  <a href="{{ url_for('dashboard.add_knowledge') }}" class="btn">+ Add knowledge</a>
+</div>
+
+{% if items %}
+  {% for item in items %}
+  <div class="kb-item">
+    <div class="kb-meta"><span class="badge badge-support">{{ item.category }}</span></div>
+    <div class="kb-title">{{ item.title }}</div>
+    <div class="kb-content">{{ item.content }}</div>
+    <div class="kb-actions">
+      <a class="btn btn-secondary btn-small" href="{{ url_for('dashboard.edit_knowledge', item_id=item.id) }}">Edit</a>
+      <form class="inline" method="post" action="{{ url_for('dashboard.delete_knowledge', item_id=item.id) }}" onsubmit="return confirm('Delete this knowledge item?');">
+        <button class="btn btn-danger btn-small" type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="empty-state">No knowledge base entries yet.</div>
+{% endif %}
+{% endblock %}

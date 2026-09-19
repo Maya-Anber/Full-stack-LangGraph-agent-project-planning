@@ -1,0 +1,1 @@
+"""RAG layer: dependency-free TF-IDF vector store, retriever, and ingestion hooks."""

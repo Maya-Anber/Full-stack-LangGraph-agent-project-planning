@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Chat{% endblock %}
+{% block content_plain %}
+<div class="chat-page">
+  <header class="chat-hero">
+    <div class="eyebrow">NOVA TECH / CUSTOMER DESK</div>
+    <h1>Find the right tech, without the runaround.</h1>
+    <p class="subtitle">Ask about products, prices, delivery, returns, or get help placing an order.</p>
+    <div class="chat-info" role="note">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>NovaTech AI Assistant is online. Product and policy answers come from NovaTech's catalog.</span>
+    </div>
+  </header>
+
+  <section class="chat-panel" aria-label="NovaTech customer chat">
+    <header class="chat-panel-head">
+      <div class="chat-agent">
+        <span class="avatar avatar-bot" aria-hidden="true">NT</span>
+        <span class="chat-agent-text">
+          <strong>NovaTech assistant</strong>
+          <span class="chat-agent-sub">
+            <span class="status-dot status-dot-sm" aria-hidden="true"></span>
+            LangGraph agent &middot; tools enabled
+          </span>
+        </span>
+      </div>
+      <div class="chat-panel-actions">
+        <button id="new-chat-btn" class="btn btn-secondary btn-small" type="button" title="Start a new conversation">
+          New chat
+        </button>
+      </div>
+    </header>
+
+    <div class="chat-setup">
+      <label for="email-input">Your email (for cart &amp; orders)</label>
+      <input id="email-input" type="email" autocomplete="email" placeholder="you@example.com"
+             title="Optional. The sales agent uses it to keep your cart and orders together.">
+      <span class="help">Optional &mdash; needed before the agent can place an order for you.</span>
+    </div>
+
+    <div id="chat-window" class="chat-window" role="log" aria-live="polite" aria-label="Conversation"></div>
+
+    <div id="chat-suggestions" class="chat-suggestions" aria-label="Suggested questions">
+      <button class="chip" type="button" data-prompt="Which laptops are under $800?">Laptops under $800</button>
+      <button class="chip" type="button" data-prompt="What is your return policy?">Return policy</button>
+      <button class="chip" type="button" data-prompt="How long does delivery take?">Delivery times</button>
+      <button class="chip" type="button" data-prompt="Which headphones do you recommend for travel?">Recommend headphones</button>
+    </div>
+
+    <form id="chat-form" class="chat-input-row">
+      <label class="sr-only" for="message-input">Message</label>
+      <textarea id="message-input" rows="1" placeholder="Ask about a product or policy..." autocomplete="off"></textarea>
+      <button id="send-btn" class="btn btn-send" type="submit" aria-label="Send message"></button>
+    </form>
+    <p class="chat-hint">
+      Enter to send &middot; Shift + Enter for a new line. Try
+      <em>&ldquo;Which laptops are under $800?&rdquo;</em> or <em>&ldquo;What is your return policy?&rdquo;</em>
+    </p>
+  </section>
+</div>
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

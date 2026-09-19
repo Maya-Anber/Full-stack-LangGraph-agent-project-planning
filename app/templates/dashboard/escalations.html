@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Support queue{% endblock %}
+{% block content %}
+<div class="actions-row">
+  <div>
+    <h1>Support queue</h1>
+    <p class="subtitle">
+      Every reply that promised a human follow-up, oldest first from the top. Handling one takes the
+      conversation off the queue — the customer keeps the transcript either way.
+    </p>
+  </div>
+  <div class="filter-row">
+    <a class="chip {{ 'chip-active' if status == 'open' }}" href="{{ url_for('dashboard.escalations', status='open') }}">
+      Needs attention ({{ counts.open }})
+    </a>
+    <a class="chip {{ 'chip-active' if status == 'handled' }}" href="{{ url_for('dashboard.escalations', status='handled') }}">
+      Handled ({{ counts.handled }})
+    </a>
+    <a class="chip {{ 'chip-active' if status == 'all' }}" href="{{ url_for('dashboard.escalations', status='all') }}">
+      All
+    </a>
+  </div>
+</div>
+
+{% if escalations %}
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Conversation</th>
+      <th>Channel</th>
+      <th>Customer</th>
+      <th>Why a human is needed</th>
+      <th>Detected</th>
+      <th>Opened</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in escalations %}
+    <tr>
+      <td>
+        <a href="{{ url_for('dashboard.conversation_detail', conversation_id=e.conversation_id) }}">#{{ e.conversation_id }}</a>
+      </td>
+      <td><span class="badge badge-{{ e.conversation.channel }}">{{ e.conversation.channel }}</span></td>
+      <td>{{ e.conversation.customer.email if e.conversation.customer else 'anonymous' }}</td>
+      <td class="reason-cell">{{ e.reason or 'No reason given' }}</td>
+      <td><span class="muted-small">{{ 'agent marker' if e.trigger == 'marker' else 'reply wording' }}</span></td>
+      <td>{{ e.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td>
+        {% if e.is_open %}
+        <span class="badge badge-open">needs attention</span>
+        {% else %}
+        <span class="badge badge-handled">handled</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if e.is_open %}
+        <form class="inline-form compact" method="post" action="{{ url_for('dashboard.resolve_escalation', escalation_id=e.id) }}">
+          <input type="text" name="handled_by" placeholder="your name" aria-label="Handled by">
+          <input type="hidden" name="next" value="{{ url_for('dashboard.escalations', status=status) }}">
+          <button class="btn btn-small" type="submit">Mark handled</button>
+        </form>
+        {% else %}
+        <div class="row-actions">
+          <span class="muted-small">{{ e.handled_by or 'admin' }} · {{ e.handled_at.strftime("%Y-%m-%d %H:%M") }}</span>
+          <form class="inline" method="post" action="{{ url_for('dashboard.reopen_escalation', escalation_id=e.id) }}">
+            <input type="hidden" name="next" value="{{ url_for('dashboard.escalations', status=status) }}">
+            <button class="btn btn-secondary btn-small" type="submit">Reopen</button>
+          </form>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% if not e.is_open and e.note %}
+    <tr class="note-row">
+      <td colspan="8"><span class="muted-small">Handled by {{ e.handled_by or 'admin' }}: {{ e.note }}</span></td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% elif status == 'handled' %}
+<div class="empty-state">No hand-offs handled yet.</div>
+{% else %}
+<div class="empty-state">Nothing waiting — the agent has answered every question itself.</div>
+{% endif %}
+{% endblock %}

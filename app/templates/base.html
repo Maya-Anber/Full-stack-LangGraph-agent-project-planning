@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}NovaTech{% endblock %} · NovaTech</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('chat.index') }}">
+      <span class="brand-mark" aria-hidden="true">⚡</span>
+      <span>NovaTech</span>
+      <span class="brand-sub">AI agent</span>
+    </a>
+    <nav class="topnav">
+      <a href="{{ url_for('chat.index') }}"{% if request.blueprint == 'chat' %} class="active" aria-current="page"{% endif %}>Chat Demo</a>
+      <a href="{{ url_for('dashboard.overview') }}"{% if request.blueprint == 'dashboard' %} class="active" aria-current="page"{% endif %}>Admin Dashboard</a>
+    </nav>
+  </header>
+
+  {% if request.blueprint == 'dashboard' %}
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-title">Admin</div>
+      <a href="{{ url_for('dashboard.overview') }}" class="{{ 'active' if request.endpoint == 'dashboard.overview' }}">Overview</a>
+      <a href="{{ url_for('dashboard.products') }}" class="{{ 'active' if 'product' in request.endpoint }}">Products</a>
+      <a href="{{ url_for('dashboard.orders') }}" class="{{ 'active' if 'order' in request.endpoint }}">Orders</a>
+      <a href="{{ url_for('dashboard.customers') }}" class="{{ 'active' if request.endpoint == 'dashboard.customers' }}">Customers</a>
+      <a href="{{ url_for('dashboard.conversations') }}" class="{{ 'active' if 'conversation' in request.endpoint }}">Conversations</a>
+      <a href="{{ url_for('dashboard.escalations') }}" class="{{ 'active' if 'escalation' in request.endpoint }}">
+        Support queue{% if open_escalation_count %} <span class="nav-count">{{ open_escalation_count }}</span>{% endif %}
+      </a>
+      <a href="{{ url_for('dashboard.knowledge') }}" class="{{ 'active' if 'knowledge' in request.endpoint }}">Knowledge Base (RAG)</a>
+    </aside>
+    <main class="content" id="main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flashes">
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  {% else %}
+  <main class="content full" id="main">
+    {% block content_plain %}{% endblock %}
+  </main>
+  {% endif %}
+</body>
+</html>

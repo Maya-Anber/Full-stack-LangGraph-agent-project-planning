@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Test-only dependencies (the tests mock the LLM, so no API key is needed).
+pytest>=8.0

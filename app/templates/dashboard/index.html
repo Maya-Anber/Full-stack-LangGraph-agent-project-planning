@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+<p class="subtitle">Snapshot of the store and the AI agent's activity.</p>
+
+<div class="stat-grid">
+  <div class="stat-card"><div class="num">{{ stats.products }}</div><div class="label">Products</div></div>
+  <div class="stat-card"><div class="num">{{ stats.orders }}</div><div class="label">Orders placed</div></div>
+  <div class="stat-card"><div class="num">{{ stats.customers }}</div><div class="label">Customers</div></div>
+  <div class="stat-card"><div class="num">{{ stats.conversations }}</div><div class="label">Conversations</div></div>
+  <div class="stat-card"><div class="num">{{ stats.knowledge_items }}</div><div class="label">Knowledge items</div></div>
+  <div class="stat-card {{ 'stat-card-alert' if stats.needs_attention else '' }}">
+    <div class="num">{{ stats.needs_attention }}</div>
+    <div class="label">Needs attention</div>
+  </div>
+</div>
+
+<h2>Waiting for a human</h2>
+{% if open_escalations %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Conversation</th><th>Channel</th><th>Customer</th><th>Why a human is needed</th><th>Opened</th></tr></thead>
+  <tbody>
+    {% for e in open_escalations %}
+    <tr>
+      <td><a href="{{ url_for('dashboard.conversation_detail', conversation_id=e.conversation_id) }}">#{{ e.conversation_id }}</a></td>
+      <td><span class="badge badge-{{ e.conversation.channel }}">{{ e.conversation.channel }}</span></td>
+      <td>{{ e.conversation.customer.email if e.conversation.customer else 'anonymous' }}</td>
+      <td class="reason-cell">{{ e.reason or 'No reason given' }}</td>
+      <td>{{ e.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="subtitle queue-link">
+  <a href="{{ url_for('dashboard.escalations') }}">Open the support queue</a> to handle or reopen items.
+</p>
+{% else %}
+<p class="muted-small">Nothing waiting — every question so far was answered by the agent itself.</p>
+{% endif %}
+
+<h2>Recent orders</h2>
+{% if recent_orders %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>ID</th><th>Customer</th><th>Status</th><th>Total</th><th>Placed</th></tr></thead>
+  <tbody>
+    {% for o in recent_orders %}
+    <tr>
+      <td><a href="{{ url_for('dashboard.order_detail', order_id=o.id) }}">#{{ o.id }}</a></td>
+      <td>{{ o.customer.email if o.customer else '—' }}</td>
+      <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
+      <td>${{ "%.2f"|format(o.total_amount) }}</td>
+      <td>{{ o.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">No confirmed orders yet — try placing one from the Chat Demo.</div>
+{% endif %}
+
+<h2>Recent conversations</h2>
+{% if recent_conversations %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>ID</th><th>Channel</th><th>Customer</th><th>Last activity</th></tr></thead>
+  <tbody>
+    {% for c in recent_conversations %}
+    <tr>
+      <td><a href="{{ url_for('dashboard.conversation_detail', conversation_id=c.id) }}">#{{ c.id }}</a></td>
+      <td><span class="badge badge-{{ c.channel }}">{{ c.channel }}</span></td>
+      <td>{{ c.customer.email if c.customer else 'anonymous' }}</td>
+      <td>{{ c.updated_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">No conversations yet.</div>
+{% endif %}
+{% endblock %}

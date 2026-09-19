@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Conversations{% endblock %}
+{% block content %}
+<div class="actions-row">
+  <div>
+    <h1>Conversations</h1>
+    <p class="subtitle">Every chat the agent has had, across the web widget and Messenger.</p>
+  </div>
+  <div class="filter-row">
+    <a class="chip {{ 'chip-active' if active_filter == 'all' }}" href="{{ url_for('dashboard.conversations') }}">All</a>
+    <a class="chip {{ 'chip-active' if active_filter == 'attention' }}"
+       href="{{ url_for('dashboard.conversations', filter='attention') }}">Needs attention ({{ attention_ids|length }})</a>
+  </div>
+</div>
+
+{% if conversations %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>ID</th><th>Channel</th><th>Customer</th><th>Messages</th><th>Last activity</th><th>Human follow-up</th></tr></thead>
+  <tbody>
+    {% for c in conversations %}
+    <tr>
+      <td><a href="{{ url_for('dashboard.conversation_detail', conversation_id=c.id) }}">#{{ c.id }}</a></td>
+      <td><span class="badge badge-{{ c.channel }}">{{ c.channel }}</span></td>
+      <td>{{ c.customer.email if c.customer else 'anonymous' }}</td>
+      <td>{{ c.messages|length }}</td>
+      <td>{{ c.updated_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td>
+        {% if c.id in attention_ids %}
+        <span class="badge badge-open">needs attention</span>
+        {% elif c.id in handled_ids %}
+        <span class="badge badge-handled">handled</span>
+        {% else %}
+        <span class="muted-small">not needed</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">No conversations yet.</div>
+{% endif %}
+{% endblock %}

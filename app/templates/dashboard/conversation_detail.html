@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Conversation #{{ conversation.id }}{% endblock %}
+{% block content %}
+<h1>Conversation #{{ conversation.id }}</h1>
+<p class="subtitle">
+  Channel: <span class="badge badge-{{ conversation.channel }}">{{ conversation.channel }}</span>
+  · Customer: {{ conversation.customer.email if conversation.customer else 'anonymous' }}
+</p>
+
+{% if open_escalation %}
+<div class="escalation-banner">
+  <div class="escalation-head">
+    <span class="badge badge-open">waiting for a human</span>
+    <strong>The agent promised this customer a follow-up.</strong>
+  </div>
+  <p class="escalation-reason">{{ open_escalation.reason or 'The agent did not say why.' }}</p>
+  <p class="muted-small">
+    Detected from {{ 'the agent marker' if open_escalation.trigger == 'marker' else 'the reply wording' }}
+    on {{ open_escalation.created_at.strftime("%Y-%m-%d %H:%M") }}. Replying to the customer is up to you —
+    the agent has no outbound channel.
+  </p>
+</div>
+{% endif %}
+
+{% if conversation.customer and conversation.customer.email %}
+<div class="escalation-banner" style="border-left-color: var(--accent-2); border-color: #c8d9e8; background: var(--accent-2-soft);">
+  <div class="escalation-head">
+    <span class="badge badge-confirmed">Customer email on file</span>
+    <strong>{{ conversation.customer.email }}</strong>
+  </div>
+  <p class="muted-small">
+    {{ "Messenger PSID: " + conversation.customer.messenger_psid if conversation.channel == "messenger" and conversation.customer.messenger_psid else "Channel: " + conversation.channel }}
+  </p>
+</div>
+{% else %}
+<div class="escalation-banner" style="border-left-color: var(--danger); border-color: #eec7cd; background: var(--danger-soft);">
+  <div class="escalation-head">
+    <span class="badge badge-open">No email on file</span>
+    <strong>This customer has not shared their email yet.</strong>
+  </div>
+  <p class="muted-small">Ask them to share their email so you can follow up outside the chat.</p>
+</div>
+{% endif %}
+
+<form class="escalation-form" method="post"
+      action="{{ url_for('dashboard.admin_reply', conversation_id=conversation.id) }}">
+  <input type="text" name="text" placeholder="Type your reply to the customer..." aria-label="Admin reply" required>
+  <input type="hidden" name="next" value="{{ url_for('dashboard.conversation_detail', conversation_id=conversation.id) }}">
+  <button class="btn btn-small" type="submit">Send to customer</button>
+</form>
+
+{% if open_escalation %}
+<form class="escalation-form" method="post"
+      action="{{ url_for('dashboard.resolve_escalation', escalation_id=open_escalation.id) }}">
+    <input type="text" name="handled_by" placeholder="your name" aria-label="Handled by">
+    <input type="text" name="note" placeholder="what you did" aria-label="Handling note">
+    <input type="hidden" name="next" value="{{ url_for('dashboard.conversation_detail', conversation_id=conversation.id) }}">
+    <button class="btn" type="submit">Mark as handled</button>
+</form>
+{% endif %}
+
+<div class="transcript">
+  {% for m in conversation.messages %}
+    {% set handoff = escalation_by_message.get(m.id) %}
+    <div class="bubble {{ 'bubble-user' if m.role == 'user' else 'bubble-assistant' }}">
+      <div class="bubble-meta">
+        {{ m.role }}{% if m.intent %} · {{ m.intent }} agent{% endif %} · {{ m.created_at.strftime("%H:%M:%S") }}
+        {% if handoff %}
+        · <span class="badge {{ 'badge-open' if handoff.is_open else 'badge-handled' }}">
+            {{ 'handed to a human' if handoff.is_open else 'handled' }}
+          </span>
+        {% endif %}
+      </div>
+      {{ m.content }}
+    </div>
+  {% endfor %}
+</div>
+
+{% if escalations %}
+<h2>Hand-off log</h2>
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Opened</th><th>Why a human was needed</th><th>Detected</th><th>Status</th><th>Handled</th><th>Note</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for e in escalations %}
+    <tr>
+      <td>{{ e.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td class="reason-cell">{{ e.reason or '—' }}</td>
+      <td><span class="muted-small">{{ 'agent marker' if e.trigger == 'marker' else 'reply wording' }}</span></td>
+      <td>
+        {% if e.is_open %}<span class="badge badge-open">needs attention</span>
+        {% else %}<span class="badge badge-handled">handled</span>{% endif %}
+      </td>
+      <td>
+        {% if e.handled_at %}{{ e.handled_by or 'admin' }} · {{ e.handled_at.strftime("%Y-%m-%d %H:%M") }}
+        {% else %}<span class="muted-small">—</span>{% endif %}
+      </td>
+      <td class="reason-cell">{{ e.note or '—' }}</td>
+      <td>
+        {% if e.is_open %}
+        <form class="inline" method="post" action="{{ url_for('dashboard.resolve_escalation', escalation_id=e.id) }}">
+          <input type="hidden" name="handled_by" value="admin">
+          <input type="hidden" name="next" value="{{ url_for('dashboard.conversation_detail', conversation_id=conversation.id) }}">
+          <button class="btn btn-small" type="submit">Mark handled</button>
+        </form>
+        {% else %}
+        <form class="inline" method="post" action="{{ url_for('dashboard.reopen_escalation', escalation_id=e.id) }}">
+          <input type="hidden" name="next" value="{{ url_for('dashboard.conversation_detail', conversation_id=conversation.id) }}">
+          <button class="btn btn-secondary btn-small" type="submit">Reopen</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+{% endblock %}

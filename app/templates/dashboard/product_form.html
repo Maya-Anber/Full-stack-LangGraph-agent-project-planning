@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit product" if product else "Add product" }}{% endblock %}
+{% block content %}
+<h1>{{ "Edit product" if product else "Add product" }}</h1>
+<p class="subtitle">Changes are used immediately by the sales agent's tools.</p>
+
+<form method="post" class="form-card">
+  <div class="field-row">
+    <div class="field">
+      <label>SKU</label>
+      <input type="text" name="sku" value="{{ product.sku if product else '' }}" required>
+    </div>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" name="name" value="{{ product.name if product else '' }}" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Category</label>
+    <select name="category_id">
+      <option value="">— none —</option>
+      {% for c in categories %}
+      <option value="{{ c.id }}" {{ "selected" if product and product.category_id == c.id }}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Description</label>
+    <textarea name="description">{{ product.description if product else '' }}</textarea>
+  </div>
+
+  <div class="field">
+    <label>Specs</label>
+    <textarea name="specs">{{ product.specs if product else '' }}</textarea>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label>Price ($)</label>
+      <input type="number" step="0.01" name="price" value="{{ product.price if product else '' }}" required>
+    </div>
+    <div class="field">
+      <label>Stock quantity</label>
+      <input type="number" name="stock_quantity" value="{{ product.stock_quantity if product else 0 }}" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Image URL (optional)</label>
+    <input type="text" name="image_url" value="{{ product.image_url if product else '' }}">
+  </div>
+
+  {% if product %}
+  <div class="field">
+    <label class="checkbox"><input type="checkbox" name="is_active" {{ "checked" if product.is_active }}> Active (visible to the sales agent)</label>
+  </div>
+  {% endif %}
+
+  <button type="submit" class="btn">{{ "Save changes" if product else "Create product" }}</button>
+  <a href="{{ url_for('dashboard.products') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

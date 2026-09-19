@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<div class="actions-row">
+  <div>
+    <h1>Products</h1>
+    <p class="subtitle">Catalog used by the sales agent (search / availability / cart / orders).</p>
+  </div>
+  <a href="{{ url_for('dashboard.add_product') }}" class="btn">+ Add product</a>
+</div>
+
+{% if products %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>SKU</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Active</th><th></th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.sku }}</td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category.name if p.category else '—' }}</td>
+      <td>${{ "%.2f"|format(p.price) }}</td>
+      <td>{{ p.stock_quantity }}</td>
+      <td>{{ "Yes" if p.is_active else "No" }}</td>
+      <td>
+        <a class="btn btn-secondary btn-small" href="{{ url_for('dashboard.edit_product', product_id=p.id) }}">Edit</a>
+        <form class="inline" method="post" action="{{ url_for('dashboard.delete_product', product_id=p.id) }}" onsubmit="return confirm('Delete this product?');">
+          <button class="btn btn-danger btn-small" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">No products yet.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1>Orders</h1>
+<p class="subtitle">Real orders created by the agent's <code>place_order</code> tool (carts are hidden here).</p>
+
+{% if orders %}
+<div class="table-wrap">
+<table>
+  <thead><tr><th>ID</th><th>Customer</th><th>Status</th><th>Items</th><th>Total</th><th>Placed</th></tr></thead>
+  <tbody>
+    {% for o in orders %}
+    <tr>
+      <td><a href="{{ url_for('dashboard.order_detail', order_id=o.id) }}">#{{ o.id }}</a></td>
+      <td>{{ o.customer.email if o.customer else '—' }}</td>
+      <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
+      <td>{{ o.items|length }}</td>
+      <td>${{ "%.2f"|format(o.total_amount) }}</td>
+      <td>{{ o.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">No orders placed yet — try the Chat Demo and ask the agent to place an order.</div>
+{% endif %}
+{% endblock %}

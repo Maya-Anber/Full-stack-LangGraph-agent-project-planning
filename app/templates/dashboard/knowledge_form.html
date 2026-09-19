@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit knowledge" if item else "Add knowledge" }}{% endblock %}
+{% block content %}
+<h1>{{ "Edit knowledge item" if item else "Add knowledge item" }}</h1>
+<p class="subtitle">Saving rebuilds the retrieval index immediately — the agent will use this on its very next reply.</p>
+
+<form method="post" class="form-card">
+  <div class="field">
+    <label>Category</label>
+    <select name="category">
+      {% for c in ["faq", "policy", "delivery", "general"] %}
+      <option value="{{ c }}" {{ "selected" if item and item.category == c }}>{{ c }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Title</label>
+    <input type="text" name="title" value="{{ item.title if item else '' }}" required>
+  </div>
+
+  <div class="field">
+    <label>Content</label>
+    <textarea class="tall" name="content" required>{{ item.content if item else '' }}</textarea>
+  </div>
+
+  <button type="submit" class="btn">{{ "Save changes" if item else "Add to knowledge base" }}</button>
+  <a href="{{ url_for('dashboard.knowledge') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

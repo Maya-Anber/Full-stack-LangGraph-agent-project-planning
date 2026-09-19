@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block content %}
+<h1>Order #{{ order.id }}</h1>
+<p class="subtitle">Customer: {{ order.customer.email if order.customer else '—' }} · Placed {{ order.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Line total</th></tr></thead>
+  <tbody>
+    {% for item in order.items %}
+    <tr>
+      <td>{{ item.product.name if item.product else '—' }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>${{ "%.2f"|format(item.unit_price) }}</td>
+      <td>${{ "%.2f"|format(item.quantity * item.unit_price) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>Status</h2>
+<p>Current status: <span class="badge badge-{{ order.status }}">{{ order.status }}</span></p>
+<form method="post" action="{{ url_for('dashboard.update_order_status', order_id=order.id) }}" class="inline-form">
+  <select name="status">
+    {% for s in ["pending", "confirmed", "shipped", "cancelled"] %}
+    <option value="{{ s }}" {{ "selected" if order.status == s }}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn" type="submit">Update</button>
+</form>
+
+<h2>Shipping address</h2>
+<p>{{ order.shipping_address or "Not provided" }}</p>
+
+<p class="order-total"><strong>Total: ${{ "%.2f"|format(order.total_amount) }}</strong></p>
+{% endblock %}
