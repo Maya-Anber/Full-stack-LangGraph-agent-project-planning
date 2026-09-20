@@ -2,7 +2,7 @@
 
 **Meta Messenger integration**, allowing the agent to handle customer queries and orders through Facebook Messenger feel free to try messaging it: https://www.facebook.com/profile.php?id=61594332399569
 
-**Live Demo:** https://funny-deer-beg.loca.lt
+**Live Demo:** https://ran-secretariat-sheep-simultaneously.trycloudflare.com/
 
 NovaTech is a small electronics store used to demonstrate a complete
 AI support and sales workflow. A customer can ask about products or store
