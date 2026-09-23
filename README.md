@@ -3,21 +3,31 @@
 **Meta Messenger integration**, allowing the agent to handle customer queries and orders through Facebook Messenger feel free to try messaging it: https://www.facebook.com/profile.php?id=61594332399569
 
 **Live Demo:** https://intervals-dryer-twin-threatened.trycloudflare.com/
+### ⚠️ Service Availability Note
+> **Deployment:** Local Server via Cloudflare Tunnel.  
+> **Status:** Active only when host machine is running.  
+> *If the bot or live URL is offline, please reach out to request live testing access.*
+
 demo 1:
+
 <img width="1920" height="2667" alt="screencapture-baking-bingo-invite-inline-trycloudflare-2026-09-23-23_37_26" src="https://github.com/user-attachments/assets/452e2c8f-ecf1-4a84-b1bd-885e34834edb" />
 
 demo 2:
+
 <img width="933" height="774" alt="image" src="https://github.com/user-attachments/assets/8f097a6a-211c-440b-a544-a4017474b3f6" />
 <img width="938" height="745" alt="image" src="https://github.com/user-attachments/assets/da702a81-b9d1-493b-b515-6e45de06354f" />
 <img width="949" height="760" alt="image" src="https://github.com/user-attachments/assets/3ddcea41-5e80-4ea9-b97c-b9055eb8fa53" />
 
 admin:
+
 <img width="1920" height="1587" alt="image" src="https://github.com/user-attachments/assets/478109b4-56f2-4fe2-a7b3-20e092741cfa" />
 <img width="1920" height="1115" alt="image" src="https://github.com/user-attachments/assets/af96b3eb-60b4-4460-97fa-42ccdca22f57" />
 <img width="1920" height="878" alt="image" src="https://github.com/user-attachments/assets/53d48151-58be-4292-b23a-712d20434a84" />
 demo 2's order:
+
 <img width="1920" height="878" alt="image" src="https://github.com/user-attachments/assets/9b5e832f-efa9-4a9e-bb38-2c5115113483" />
 customers & convos:
+
 <img width="1920" height="878" alt="image" src="https://github.com/user-attachments/assets/64df0f9a-341f-4c34-9b0a-0e6f9f906032" />
 <img width="1919" height="874" alt="image" src="https://github.com/user-attachments/assets/44d3898d-f954-448a-ad98-2f503348fbfa" />
 <img width="1920" height="866" alt="image" src="https://github.com/user-attachments/assets/6fdff89f-7503-4c2a-b515-d176872037f4" />
@@ -25,6 +35,7 @@ customers & convos:
 <img width="1918" height="873" alt="image" src="https://github.com/user-attachments/assets/304c8d3f-78bc-4be2-a0f7-bafae633b93d" />
 
 knowledge base:
+
 <img width="1920" height="2467" alt="image" src="https://github.com/user-attachments/assets/ad99857a-ba1a-4b82-b7ee-bc3f1146614b" />
 
 
