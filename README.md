@@ -3,10 +3,12 @@
 **Meta Messenger integration**, allowing the agent to handle customer queries and orders through Facebook Messenger feel free to try messaging it: https://www.facebook.com/profile.php?id=61594332399569
 
 **Live Demo:** https://intervals-dryer-twin-threatened.trycloudflare.com/
+
 ### ⚠️ Service Availability Note
-> **Deployment:** Local Server via Cloudflare Tunnel.  
-> **Status:** Active only when host machine is running.  
-> *If the bot or live URL is offline, please reach out to request live testing access.*
+This application is served locally and exposed via **Cloudflare Tunnels**. 
+- **Availability:** The live link and bot depend on local execution from my machine.
+- **Offline Status:** If the link is down, my local environment is currently shut down.
+- **Want to test?** Feel free to contact me directly to spin up the local server and bot instance for your testing session.
 
 demo 1:
 
