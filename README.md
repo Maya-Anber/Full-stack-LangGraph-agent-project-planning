@@ -4,8 +4,7 @@
 
 **Live Demo:** https://intervals-dryer-twin-threatened.trycloudflare.com/
 
-### ⚠️ Service Availability Note
-[!NOTE]
+### ⚠️⚠️⚠️  Service Availability Note
 This application is served locally and exposed via **Cloudflare Tunnels**. 
 - **Availability:** The live link and bot depend on local execution from my machine.
 - **Offline Status:** If the link is down, my local environment is currently shut down.
